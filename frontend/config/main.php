@@ -48,6 +48,11 @@ return [
                     'controller' => 'user',
                     'pluralize' => false,
                 ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'meetup',
+                    'pluralize' => false,
+                ],
             ],
         ],
     ],
