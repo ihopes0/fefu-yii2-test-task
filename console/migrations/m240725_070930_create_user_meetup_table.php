@@ -24,23 +24,28 @@ class m240725_070930_create_user_meetup_table extends Migration
             'meetup_id' => $this->integer()->notNull(),
         ], $tableOptions);
 
-        $this->addForeignKey(
-            'fk-user_meetup-user_id',
-            'user_meetup',
-            'user_id',
-            'user',
-            'id',
-            'CASCADE'
-        );
+        $_tableSchema = \Yii::$app->db->schema->getTableSchema('{{%user_meetup}}');
 
-        $this->addForeignKey(
-            'fk-user_meetup-meetup_id',
-            'user_meetup',
-            'meetup_id',
-            'meetup',
-            'id',
-            'CASCADE'
-        );
+        if(!array_key_exists('fk-user_meetup-user_id', $_tableSchema->foreignKeys)) {
+            $this->addForeignKey(
+                'fk-user_meetup-user_id',
+                'user_meetup',
+                'user_id',
+                'user',
+                'id',
+                'CASCADE'
+            );
+        }
+        if(!array_key_exists('fk-user_meetup-meetup_id', $_tableSchema->foreignKeys)) {
+            $this->addForeignKey(
+                'fk-user_meetup-meetup_id',
+                'user_meetup',
+                'meetup_id',
+                'meetup',
+                'id',
+                'CASCADE'
+            );
+        }
     }
 
     /**
@@ -48,15 +53,23 @@ class m240725_070930_create_user_meetup_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey(
-            'fk-user_meetup-user_id',
-            'user_meetup'
-        );
+        $_tableSchema = \Yii::$app->db->schema->getTableSchema('{{%user_meetup}}');
 
-        $this->dropForeignKey(
-            'fk-user_meetup-meetup_id',
-            'user_meetup'
-        );
+        if($_tableSchema) {
+            if(array_key_exists('fk-user_meetup-user_id', $_tableSchema->foreignKeys)) {
+                $this->dropForeignKey(
+                    'fk-user_meetup-user_id',
+                    'user_meetup'
+                );
+            }
+            
+            if(array_key_exists('fk-user_meetup-meetup_id', $_tableSchema->foreignKeys)) {
+                $this->dropForeignKey(
+                    'fk-user_meetup-meetup_id',
+                    'user_meetup'
+                );
+            }    
+        }
 
         $this->dropTable('{{%user_meetup}}');
     }
