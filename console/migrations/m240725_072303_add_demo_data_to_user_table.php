@@ -13,8 +13,10 @@ class m240725_072303_add_demo_data_to_user_table extends Migration
     public function safeUp()
     {
         $rows = [];
-        for($i = 0; $i < 50; $i++) {
-            echo "User {$i}\n";
+        $userGenerateCount = 50;
+        echo "Genereting data for {$userGenerateCount} users\n";
+        for($i = 1; $i <= $userGenerateCount; $i++) {
+            echo "User {$i}... ";
             $faker = \Faker\Factory::create();
             $firstName = $faker->firstName();
             $lastName = $faker->lastName();
@@ -28,8 +30,11 @@ class m240725_072303_add_demo_data_to_user_table extends Migration
                 \Yii::$app->getSecurity()->generatePasswordHash('password_' . $i),
                 \Yii::$app->getSecurity()->generateRandomString()
             ];
+            echo "Done\n";
         }
+        echo "User data generation complete!\n\n";
 
+        echo "Inserting in database... ";
         $this->batchInsert('user', [
             'created_at',
             'first_name',
