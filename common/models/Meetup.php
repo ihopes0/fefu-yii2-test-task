@@ -38,13 +38,10 @@ class Meetup extends ActiveRecord
 
     public function fields()
     {
-        return [
-            'id',
-            'date_start',
-            'date_end',
-            'room',
-            'number_of_members'
-        ];
+
+        $fields = parent::fields();
+        
+        return $fields;
     }
 
     public function extraFields()
