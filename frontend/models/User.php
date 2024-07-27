@@ -22,9 +22,4 @@ final class User extends \common\models\User
             'meetups'
         ];
     }
-
-    public function getMeetups()
-    {
-        return $this->hasMany(Meetup::class, ['id' => 'meetup_id'])->viaTable('user_meetup', ['user_id' => 'id']);
-    }
 }

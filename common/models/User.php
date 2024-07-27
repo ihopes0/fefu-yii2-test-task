@@ -210,4 +210,9 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+    public function getMeetups()
+    {
+        return $this->hasMany(Meetup::class, ['id' => 'meetup_id'])->viaTable('user_meetup', ['user_id' => 'id']);
+    }
 }

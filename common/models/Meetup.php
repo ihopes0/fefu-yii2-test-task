@@ -36,21 +36,6 @@ class Meetup extends ActiveRecord
         ];
     }
 
-    public function fields()
-    {
-
-        $fields = parent::fields();
-        
-        return $fields;
-    }
-
-    public function extraFields()
-    {
-        return [
-            'users'
-        ];
-    }
-
     public function getUsers()
     {
         return $this->hasMany(User::class, ['id' => 'user_id'])->viaTable('user_meetup', ['meetup_id' => 'id']);

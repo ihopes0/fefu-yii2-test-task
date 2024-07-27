@@ -2,7 +2,7 @@
 
 namespace frontend\controllers;
 
-use common\models\Meetup;
+use frontend\models\Meetup;
 
 final class MeetupController extends BaseRestApiController
 {
