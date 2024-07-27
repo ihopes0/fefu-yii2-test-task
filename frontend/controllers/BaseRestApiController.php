@@ -6,18 +6,25 @@ use yii\rest\ActiveController;
 
 class BaseRestApiController extends ActiveController
 {
-
+    /**
+     * @var array
+     */
     public $serializer = [
         'class' => 'yii\rest\Serializer',
         'collectionEnvelope' => 'item',
     ];
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function checkAccess($action, $model = null, $params = [])
     {
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [

@@ -2,24 +2,31 @@
 
 namespace frontend\models;
 
-use common\models\Meetup;
+use yii\helpers\Url;
+use yii\web\Linkable;
 
-final class User extends \common\models\User
+final class User extends \common\models\User implements Linkable
 {
     public function fields()
     {
-        return [
-            'id',
-            'email',
-            'name' => fn() => "{$this->first_name} {$this->last_name}",
-            'login',
-        ];
+        $fields = parent::fields();
+
+        unset($fields['password'], $fields['auth_key']);
+
+        return $fields;
     }
 
     public function extraFields()
     {
         return [
             'meetups'
+        ];
+    }
+
+    public function getLinks()
+    {
+        return [
+            'view' => Url::to(['user/view', 'id' => $this->id]),
         ];
     }
 }
