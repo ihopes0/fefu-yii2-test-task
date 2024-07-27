@@ -3,9 +3,8 @@
 namespace frontend\controllers;
 
 use common\models\Meetup;
-use yii\rest\ActiveController;
 
-final class MeetupController extends ActiveController
+final class MeetupController extends BaseRestApiController
 {
     public $modelClass = Meetup::class;
 }

@@ -3,9 +3,8 @@
 namespace frontend\controllers;
 
 use frontend\models\User;
-use yii\rest\ActiveController;
 
-final class UserController extends ActiveController
+final class UserController extends BaseRestApiController
 {
     public $modelClass = User::class;
 }
