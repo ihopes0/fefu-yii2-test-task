@@ -30,9 +30,7 @@ class Meetup extends ActiveRecord
     public function rules()
     {
         return [
-            ['date_start', 'string'],
-            ['date_end', 'string'],
-            ['number_of_members', 'integer'],
+            [['starts_at', 'ends_at', 'max_number_of_members', 'count_participated_members'], 'integer'],
         ];
     }
 
