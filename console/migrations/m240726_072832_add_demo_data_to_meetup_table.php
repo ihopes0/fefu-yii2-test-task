@@ -20,7 +20,7 @@ class m240726_072832_add_demo_data_to_meetup_table extends Migration
 
                 $faker = \Faker\Factory::create();
                 $title = "Top salesman of the {$faker->city()}";
-                $starts_at = strtotime('24-10-' . rand(1, 31) . ' ' . rand(10, 17) . ':' . rand(0, 59));
+                $starts_at = strtotime("24-10-{$day}" . ' ' . rand(10, 17) . ':' . rand(0, 59));
                 $ends_at = $starts_at + rand(1800, 10800);
                 $place = 'Room ' . rand(1, 500);
                 $max_number_of_members = rand(2, 40);
