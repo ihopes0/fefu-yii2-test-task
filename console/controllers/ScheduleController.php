@@ -21,12 +21,11 @@ final class ScheduleController extends Controller
 
         if ($usersId[0] == 'all') {
             $users = User::find()->asArray()->all();
-        }
-        else {
+        } else {
             $users = User::find()
-                    ->where(['id' => $usersId])
-                    ->asArray()
-                    ->all();
+                ->where(['id' => $usersId])
+                ->asArray()
+                ->all();
         }
         if (!$users) {
             throw new \Exception('User not found');
@@ -47,14 +46,14 @@ final class ScheduleController extends Controller
             $scheduledMeetupsId = [];
             $lastEndTime = 0;
 
-            foreach ($meetups as $meetup) {
+            foreach ($meetups as $index => $meetup) {
                 if (
                     $meetup['starts_at'] >= $lastEndTime &&
                     $meetup['count_participated_members'] < $meetup['max_number_of_members']
                 ) {
                     $scheduledMeetups[] = $meetup;
                     $lastEndTime = $meetup['ends_at'];
-                    $meetup['count_participated_members'] += 1;
+                    $meetups[$index]['count_participated_members'] += 1;
                     $scheduledMeetupsId[] = $meetup['id'];
                 }
             }
