@@ -18,13 +18,13 @@ final class ScheduleController extends Controller
      * @return int 0 if successful
      * @throws \Exception on any error
      */
-    public function actionCreateFor(array $usersId, int $day = -1, bool $delete = false): int
+    public function actionCreateFor(array $usersId, int $day = -1): int
     {
         if (!$day || $day <= 0) {
             $day = date('d', time());
         }
 
-        // mock data on the date of meetings is limited to October 10, 2024 (see migrations)
+        // mock data on the date of meetings is limited to October, 2024 (see migrations)
         echo "Making schedule for 2024-10-{$day}\n";
 
         if ($usersId[0] == 'all') {
