@@ -9,19 +9,26 @@ use yii\console\Controller;
 
 final class ScheduleController extends Controller
 {
-    public function actionCreateFor(array $userId, int $day = null, bool $delete = false)
+    public function actionCreateFor(array $usersId, int $day = null, bool $delete = false)
     {
         if (!$day || $day <= 0) {
             $day = date('d', time());
         }
 
-        if ($userId[0] == 'all') {
-            $this->createForAll($day, $delete);
-            return;
+        if ($delete) {
+            UserMeetup::deleteAll(['user_id' => $usersId]);
         }
 
-        $user = User::findOne(['id' => $userId]);
-        if (!$user) {
+        if ($usersId[0] == 'all') {
+            $users = User::find()->asArray()->all();
+        }
+        else {
+            $users = User::find()
+                    ->where(['id' => $usersId])
+                    ->asArray()
+                    ->all();
+        }
+        if (!$users) {
             throw new \Exception('User not found');
         }
 
@@ -35,45 +42,44 @@ final class ScheduleController extends Controller
             throw new \Exception('Meetups not found');
         }
 
-        $scheduledMeetups = [];
-        $lastEndTime = 0;
+        foreach ($users as $user) {
+            $scheduledMeetups = [];
+            $scheduledMeetupsId = [];
+            $lastEndTime = 0;
 
-        foreach ($meetups as $meetup) {
-            if (
-                $meetup['starts_at'] >= $lastEndTime &&
-                $meetup['count_participated_members'] < $meetup['max_number_of_members']
-            ) {
-                $scheduledMeetups[] = $meetup;
-                $lastEndTime = $meetup['ends_at'];
-                $meetup['count_participated_members'] += 1;
-                Meetup::updateAllCounters(['count_participated_members' => 1], ['id' => $meetup['id']]);
+            foreach ($meetups as $meetup) {
+                if (
+                    $meetup['starts_at'] >= $lastEndTime &&
+                    $meetup['count_participated_members'] < $meetup['max_number_of_members']
+                ) {
+                    $scheduledMeetups[] = $meetup;
+                    $lastEndTime = $meetup['ends_at'];
+                    $meetup['count_participated_members'] += 1;
+                    $scheduledMeetupsId[] = $meetup['id'];
+                }
             }
-        }
 
-        if ($delete) {
-            UserMeetup::deleteAll(['user_id' => $userId]);
-        }
-
-        foreach ($scheduledMeetups as $scheduledMeetup) {
-            $userMeetup = new UserMeetup();
-            $userMeetup->user_id = (int) $userId;
-            $userMeetup->meetup_id = $scheduledMeetup['id'];
-            if (!$userMeetup->save()) {
-                throw new \Exception('Failed to save meetup for user: ' . json_encode($userMeetup->errors));
+            foreach ($scheduledMeetups as $scheduledMeetup) {
+                $userMeetup = new UserMeetup();
+                $userMeetup->created_at = time();
+                $userMeetup->user_id = $user['id'];
+                $userMeetup->meetup_id = $scheduledMeetup['id'];
+                if (!$userMeetup->save()) {
+                    throw new \Exception('Failed to save meetup for user: ' . json_encode($userMeetup->errors));
+                }
             }
+            Meetup::updateAllCounters(['count_participated_members' => 1], ['id' => $scheduledMeetupsId]);
         }
-        echo "createFor {$user->first_name}\n";
+
+        echo "Success!\n";
 
         return 0;
     }
 
-    private function createForAll(int $day, bool $delete)
-    {
-        echo "createForAll\n";
-    }
-
+    // for development only
     public function actionDeleteAllScheduledMeetups()
     {
+        Meetup::updateAll(['count_participated_members' => 0]);
         UserMeetup::deleteAll();
     }
 }
