@@ -7,17 +7,25 @@ use frontend\models\User;
 use frontend\models\UserMeetup;
 use yii\console\Controller;
 
+/**
+ * Schedule console controller
+ */
 final class ScheduleController extends Controller
 {
-    public function actionCreateFor(array $usersId, int $day = null, bool $delete = false)
+
+    /**
+     * Creates a schedule for given users using a simple approximate greedy algorithm.
+     * @return int 0 if successful
+     * @throws \Exception on any error
+     */
+    public function actionCreateFor(array $usersId, int $day = -1, bool $delete = false): int
     {
         if (!$day || $day <= 0) {
             $day = date('d', time());
         }
 
-        if ($delete) {
-            UserMeetup::deleteAll(['user_id' => $usersId]);
-        }
+        // mock data on the date of meetings is limited to October 10, 2024 (see migrations)
+        echo "Making schedule for 2024-10-{$day}\n";
 
         if ($usersId[0] == 'all') {
             $users = User::find()->asArray()->all();
@@ -53,6 +61,7 @@ final class ScheduleController extends Controller
                 ) {
                     $scheduledMeetups[] = $meetup;
                     $lastEndTime = $meetup['ends_at'];
+
                     $meetups[$index]['count_participated_members'] += 1;
                     $scheduledMeetupsId[] = $meetup['id'];
                 }
