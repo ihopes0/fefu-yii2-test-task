@@ -50,6 +50,16 @@ final class ScheduleController extends Controller
 
         echo "Making schedule for Users " . implode(',', $usersId) . " on {$date}\n";
 
+        $this->makeSchedule($users, $meetups);
+
+        echo "Success!\n";
+
+        return 0;
+    }
+
+
+    private function makeSchedule(array $users, array $meetups): void
+    {
         foreach ($users as $user) {
             $scheduledMeetups = [];
             $scheduledMeetupsId = [];
@@ -79,11 +89,8 @@ final class ScheduleController extends Controller
             }
             Meetup::updateAllCounters(['count_participated_members' => 1], ['id' => $scheduledMeetupsId]);
         }
-
-        echo "Success!\n";
-
-        return 0;
     }
+
 
     // for development only
     public function actionDeleteAllScheduledMeetups()
