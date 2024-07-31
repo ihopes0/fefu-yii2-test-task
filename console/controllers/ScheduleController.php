@@ -18,14 +18,12 @@ final class ScheduleController extends Controller
      * @return int 0 if successful
      * @throws \Exception on any error
      */
-    public function actionCreateFor(array $usersId, int $day = -1): int
+    public function actionCreateFor(array $usersId, string $date): int
     {
-        if (!$day || $day <= 0) {
-            $day = date('d', time());
+        if (!strtotime($date)) {
+            throw new \Exception('Date validation error: ' . '"' . $date . '"' . " is not a valid date");
         }
-
-        // mock data on the date of meetings is limited to October, 2024 (see migrations)
-        echo "Making schedule for 2024-10-{$day}\n";
+        $date = date('y-m-d', strtotime($date));
 
         if ($usersId[0] == 'all') {
             $users = User::find()->asArray()->all();
@@ -40,14 +38,17 @@ final class ScheduleController extends Controller
         }
 
         $meetups = Meetup::find()
-            ->where(['>=', 'starts_at', strtotime("24-10-{$day} 00:00")])
-            ->andWhere(['<=', 'starts_at', strtotime("24-10-{$day} 23:59")])
+            ->where(['>=', 'starts_at', strtotime("{$date} 00:00")])
+            ->andWhere(['<=', 'starts_at', strtotime("{$date} 23:59")])
             ->orderBy(['ends_at' => SORT_ASC])
             ->asArray()
             ->all();
         if (!$meetups) {
-            throw new \Exception('Meetups not found');
+            echo "There are no meetings on {$date}\n";
+            return 1;
         }
+
+        echo "Making schedule for Users " . implode(',', $usersId) . " on {$date}\n";
 
         foreach ($users as $user) {
             $scheduledMeetups = [];
