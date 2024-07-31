@@ -53,6 +53,7 @@ return [
                     'controller' => 'meetup',
                     'pluralize' => false,
                 ],
+                'POST user/create-schedule' => 'user/create-schedule',
             ],
         ],
     ],
