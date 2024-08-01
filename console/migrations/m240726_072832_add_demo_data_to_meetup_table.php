@@ -13,9 +13,9 @@ class m240726_072832_add_demo_data_to_meetup_table extends Migration
     public function safeUp()
     {
         $rows = [];
-        for($day = 1; $day <= 31; $day++) {
+        for ($day = 1; $day <= 31; $day++) {
             echo "Generating day {$day}\n";
-            for($meetup_count = 1; $meetup_count <= 10; $meetup_count++) {
+            for ($meetup_count = 1; $meetup_count <= 10; $meetup_count++) {
                 echo "Meeting №{$meetup_count}... ";
 
                 $faker = \Faker\Factory::create();
@@ -27,6 +27,7 @@ class m240726_072832_add_demo_data_to_meetup_table extends Migration
 
                 $rows[] = [
                     time(),
+                    time(),
                     $title,
                     $starts_at,
                     $ends_at,
@@ -36,12 +37,12 @@ class m240726_072832_add_demo_data_to_meetup_table extends Migration
                 echo "Done\n";
             }
             echo "Day {$day} generation complete!\n\n";
-            
         }
 
         echo "Inserting in database... ";
         $this->batchInsert('meetup', [
             'created_at',
+            'updated_at',
             'title',
             'starts_at',
             'ends_at',
@@ -57,20 +58,20 @@ class m240726_072832_add_demo_data_to_meetup_table extends Migration
     {
         $_tableSchema = \Yii::$app->db->schema->getTableSchema('{{%user_meetup}}');
 
-        if($_tableSchema) {
-            if(array_key_exists('fk-user_meetup-user_id', $_tableSchema->foreignKeys)) {
+        if ($_tableSchema) {
+            if (array_key_exists('fk-user_meetup-user_id', $_tableSchema->foreignKeys)) {
                 $this->dropForeignKey(
                     'fk-user_meetup-user_id',
                     'user_meetup'
                 );
             }
-            
-            if(array_key_exists('fk-user_meetup-meetup_id', $_tableSchema->foreignKeys)) {
+
+            if (array_key_exists('fk-user_meetup-meetup_id', $_tableSchema->foreignKeys)) {
                 $this->dropForeignKey(
                     'fk-user_meetup-meetup_id',
                     'user_meetup'
                 );
-            }    
+            }
         }
 
         $this->truncateTable('meetup');

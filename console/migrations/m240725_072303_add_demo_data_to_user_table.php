@@ -18,11 +18,13 @@ class m240725_072303_add_demo_data_to_user_table extends Migration
         for($i = 1; $i <= $userGenerateCount; $i++) {
             echo "User {$i}... ";
             $faker = \Faker\Factory::create();
+            $time = $faker->unixTime('now');
             $firstName = $faker->firstName();
             $lastName = $faker->lastName();
             $login = $lastName . (string) rand(1,100) . $firstName . (string) rand(1,100);
             $rows[] = [
-                $faker->unixTime('now'),
+                $time,
+                $time,
                 $firstName,
                 $lastName,
                 $login,
@@ -37,6 +39,7 @@ class m240725_072303_add_demo_data_to_user_table extends Migration
         echo "Inserting in database... ";
         $this->batchInsert('user', [
             'created_at',
+            'updated_at',
             'first_name',
             'last_name',
             'login',
