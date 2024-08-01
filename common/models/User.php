@@ -4,6 +4,7 @@ namespace common\models;
 
 use \yii\db\ActiveRecord;
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "user".
@@ -28,6 +29,13 @@ class User extends ActiveRecord
     public static function tableName()
     {
         return 'user';
+    }
+
+    public function behaviors()
+    {
+        return [
+                TimestampBehavior::class,
+        ];
     }
 
     /**

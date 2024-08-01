@@ -2,7 +2,9 @@
 
 namespace common\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * Meetup model
@@ -29,13 +31,20 @@ class Meetup extends ActiveRecord
         return 'meetup';
     }
 
+    public function behaviors()
+    {
+        return [
+                TimestampBehavior::class,
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['created_at', 'title', 'starts_at', 'ends_at', 'place', 'max_number_of_members'], 'required'],
+            [['title', 'starts_at', 'ends_at', 'place', 'max_number_of_members'], 'required'],
             [['created_at', 'updated_at', 'starts_at', 'ends_at', 'max_number_of_members', 'count_participated_members'], 'integer'],
             [['title', 'place'], 'string', 'max' => 255],
         ];

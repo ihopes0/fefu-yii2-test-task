@@ -19,8 +19,8 @@ class m240725_065551_create_meetup_table extends Migration
 
         $this->createTable('{{%meetup}}', [
             'id' => $this->primaryKey(),
-            'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer(),
+            'created_at' => $this->integer(11),
+            'updated_at' => $this->integer(11),
             'title' => $this->string()->notNull(),
             'starts_at' => $this->integer()->notNull(),
             'ends_at' => $this->integer()->notNull(),
