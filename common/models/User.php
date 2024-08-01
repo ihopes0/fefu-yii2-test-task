@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use \yii\db\ActiveRecord;
 use Yii;
 
 /**
@@ -17,9 +18,9 @@ use Yii;
  * @property string $password
  * @property string|null $auth_key
  *
- * @property UserMeetup[] $userMeetups
+ * @property Meetup[] $meetups
  */
-class User extends \yii\db\ActiveRecord
+class User extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -58,16 +59,6 @@ class User extends \yii\db\ActiveRecord
             'password' => 'Password',
             'auth_key' => 'Auth Key',
         ];
-    }
-
-    /**
-     * Gets query for [[UserMeetups]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserMeetups()
-    {
-        return $this->hasMany(UserMeetup::class, ['user_id' => 'id']);
     }
 
     public function getMeetups()

@@ -26,7 +26,7 @@ class Meetup extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%meetup}}';
+        return 'meetup';
     }
 
     /**
