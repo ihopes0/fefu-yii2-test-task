@@ -11,7 +11,8 @@ final class Meetup extends \common\models\Meetup implements Linkable
     {
 
         $fields = parent::fields();
-        $fields['date'] = fn($model) => date('y-m-d h:i', $model->starts_at);
+        $fields['pretty_date'] = fn($model) => date('y-m-d h:i', $model->starts_at);
+        
         return $fields;
     }
 
