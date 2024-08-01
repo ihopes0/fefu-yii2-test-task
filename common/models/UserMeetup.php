@@ -20,7 +20,20 @@ class UserMeetup extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'meetup_id'], 'integer'],
+            [['created_at', 'user_id', 'meetup_id'], 'integer'],
+            [['user_id', 'meetup_id'], 'required'],
+            [['meetup_id'], 'exist', 'skipOnError' => true, 'targetClass' => Meetup::class, 'targetAttribute' => ['meetup_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'created_at' => 'Created At',
+            'user_id' => 'User ID',
+            'meetup_id' => 'Meetup ID',
         ];
     }
 }
