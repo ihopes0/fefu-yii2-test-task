@@ -54,7 +54,6 @@ final class UserController extends BaseRestApiController
     {
         foreach ($users as $user) {
             $scheduledMeetups = [];
-            $scheduledMeetupsId = [];
             $lastEndTime = 0;
 
             foreach ($meetups as $index => $meetup) {
@@ -66,20 +65,22 @@ final class UserController extends BaseRestApiController
                     $lastEndTime = $meetup['ends_at'];
 
                     $meetups[$index]['count_participated_members'] += 1;
-                    $scheduledMeetupsId[] = $meetup['id'];
                 }
             }
 
+            $savedMeetupsId = [];
+
             foreach ($scheduledMeetups as $scheduledMeetup) {
                 $userMeetup = new UserMeetup();
-                $userMeetup->created_at = time();
                 $userMeetup->user_id = $user['id'];
                 $userMeetup->meetup_id = $scheduledMeetup['id'];
                 if (!$userMeetup->save()) {
-                    throw new \Exception('Failed to save meetup for user: ' . json_encode($userMeetup->errors));
+                    echo 'Failed to save meetup for user: ' . json_encode($userMeetup->errors) . "\n";
+                    continue;
                 }
+                $savedMeetupsId[] = $scheduledMeetup['id'];
             }
-            Meetup::updateAllCounters(['count_participated_members' => 1], ['id' => $scheduledMeetupsId]);
+            Meetup::updateAllCounters(['count_participated_members' => 1], ['id' => $savedMeetupsId]);
         }
     }
 }

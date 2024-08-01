@@ -80,7 +80,6 @@ final class ScheduleController extends Controller
 
             foreach ($scheduledMeetups as $scheduledMeetup) {
                 $userMeetup = new UserMeetup();
-                $userMeetup->created_at = time();
                 $userMeetup->user_id = $user['id'];
                 $userMeetup->meetup_id = $scheduledMeetup['id'];
                 if (!$userMeetup->save()) {

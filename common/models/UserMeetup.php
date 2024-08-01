@@ -4,6 +4,7 @@ namespace common\models;
 
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 class UserMeetup extends ActiveRecord
 {
@@ -18,7 +19,15 @@ class UserMeetup extends ActiveRecord
     public function behaviors()
     {
         return [
-                TimestampBehavior::class,
+            'timestamp' => [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => [],
+                ],
+                'value' => time(),
+
+            ],
         ];
     }
 
