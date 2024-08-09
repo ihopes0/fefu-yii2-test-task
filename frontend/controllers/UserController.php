@@ -14,10 +14,17 @@ final class UserController extends BaseRestApiController
 
     public function actionCreateSchedule(string $usersId, string $date)
     {
-        Scheduler::make($usersId, $date);
 
-        Yii::$app->response->statusCode = 200;
-        Yii::$app->response->content = "OK";
+        try {
+            Scheduler::make($usersId, $date);
+
+            Yii::$app->response->statusCode = 200;
+            Yii::$app->response->content = "OK";
+        } catch (\Throwable $th) {
+            Yii::$app->response->statusCode = 400;
+            Yii::$app->response->content = $th->getMessage();
+        }
+
         return Yii::$app->response->send();
     }
 }

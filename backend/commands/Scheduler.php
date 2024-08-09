@@ -91,7 +91,7 @@ final class Scheduler
             ->asArray()
             ->all();
         if (!$result) {
-            return "There are no meetings on {$date}\n";
+            throw new \Exception("There are no meetings on {$date}\n");
         }
 
         return $result;
