@@ -10,34 +10,11 @@ final class Scheduler
 {
     public static function make(string $usersId, string $date)
     {
-        $usersId = explode(',', $usersId);
+        static::prepareData($usersId, $date);
 
-        if (!strtotime($date)) {
-            throw new \Exception('Date validation error: ' . '"' . $date . '"' . " is not a valid date");
-        }
-        $date = date('y-m-d', strtotime($date));
+        $users = static::getUsers($usersId);
 
-        if ($usersId[0] == 'all') {
-            $users = User::find()->asArray()->all();
-        } else {
-            $users = User::find()
-                ->where(['id' => $usersId])
-                ->asArray()
-                ->all();
-        }
-        if (!$users) {
-            throw new \Exception('User not found');
-        }
-
-        $meetups = Meetup::find()
-            ->where(['>=', 'starts_at', strtotime("{$date} 00:00")])
-            ->andWhere(['<=', 'starts_at', strtotime("{$date} 23:59")])
-            ->orderBy(['ends_at' => SORT_ASC])
-            ->asArray()
-            ->all();
-        if (!$meetups) {
-            return "There are no meetings on {$date}\n";
-        }
+        $meetups = static::getMeetups($date);
 
         static::makeSchedule($users, $meetups);
     }
@@ -75,5 +52,48 @@ final class Scheduler
             }
             Meetup::updateAllCounters(['count_participated_members' => 1], ['id' => $savedMeetupsId]);
         }
+    }
+
+    private static function prepareData(&$usersId, &$date)
+    {
+        $usersId = explode(',', $usersId);
+
+        if (!strtotime($date)) {
+            throw new \Exception('Date validation error: ' . '"' . $date . '"' . " is not a valid date");
+        }
+        $date = date('y-m-d', strtotime($date));
+    }
+
+    private static function getUsers($usersId)
+    {
+        if ($usersId[0] == 'all') {
+            $users = User::find()->asArray()->all();
+        } else {
+            $users = User::find()
+                ->where(['id' => $usersId])
+                ->asArray()
+                ->all();
+        }
+
+        if (!$users) {
+            throw new \Exception('User not found');
+        }
+
+        return $users;
+    }
+
+    private static function getMeetups($date)
+    {
+        $result = Meetup::find()
+            ->where(['>=', 'starts_at', strtotime("{$date} 00:00")])
+            ->andWhere(['<=', 'starts_at', strtotime("{$date} 23:59")])
+            ->orderBy(['ends_at' => SORT_ASC])
+            ->asArray()
+            ->all();
+        if (!$result) {
+            return "There are no meetings on {$date}\n";
+        }
+
+        return $result;
     }
 }
