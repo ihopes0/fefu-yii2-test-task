@@ -16,7 +16,6 @@ final class ScheduleController extends Controller
     /**
      * Creates a schedule via Scheduler class.
      * @return int 0 if successful
-     * @throws \Exception on any error
      */
     public function actionCreateFor(string $usersId, string $date): int
     {
