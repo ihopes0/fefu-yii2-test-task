@@ -19,13 +19,12 @@ final class ScheduleController extends Controller
      */
     public function actionCreateFor(string $usersId, string $date): int
     {
-        echo "Making schedule for Users " . $usersId . " on {$date}\n";
         try {
             Scheduler::make($usersId, $date);
             echo "Success!\n";
             
         } catch (\Throwable $th) {
-            echo $th->getMessage();
+            echo $th->getMessage() . " in " . $th->getFile() . " on line " . $th->getLine();
         }
 
         return 0;
