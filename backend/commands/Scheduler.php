@@ -24,6 +24,9 @@ final class Scheduler
         static::makeSchedule($users, $meetups);
     }
 
+    /**
+     * Составляет расписание для пользователей $users из массива встреч $meetups
+     */
     private static function makeSchedule(array $users, array $meetups): void
     {
         // проходит по каждому пользователю и создает ему расписание, потом сохраняет в БД
@@ -32,8 +35,10 @@ final class Scheduler
             $lastMeetupEndTime = 0;
 
             foreach ($meetups as $index => $meetup) {
-                // встреча начинается не раньше окончания предыдущей
+                // Если встреча начинается не раньше окончания предыдущей
                 // и ее лимит участников не достигнут
+                // встреча добавляется в массив назначенных встреч
+                // и обновляется ее счетчик участников
                 if (
                     $meetup['starts_at'] >= $lastMeetupEndTime &&
                     $meetup['count_participated_members'] < $meetup['max_number_of_members']
@@ -88,6 +93,9 @@ final class Scheduler
         $date = date('y-m-d', strtotime($date));
     }
 
+    /**
+     * Получает массив пользователей по ID из БД
+     */
     private static function getUsers(array $usersId): array
     {
 
@@ -107,6 +115,9 @@ final class Scheduler
         return $users;
     }
 
+    /**
+     * Получает массив встреч по ID из БД
+     */
     private static function getMeetups($date)
     {
         $result = Meetup::find()
@@ -122,9 +133,14 @@ final class Scheduler
         return $result;
     }
 
+    /**
+     * Проводит фильтрацию значений ID пользователей.
+     * Пример: ['bili', 'bala', '1'] - - > ['1']
+     */
     private static function filterInvalidUserId(array $usersId): array
     {
         $length = count($usersId);
+
         for ($i = 0; $i < $length; $i++) {
             $userId = $usersId[$i];
             if ($userId !== 'all' && (int) $userId === 0) {
@@ -133,6 +149,6 @@ final class Scheduler
             }
         }
 
-        return array_values($usersId);
+        return array_values($usersId); // реиндексация массива
     }
 }
