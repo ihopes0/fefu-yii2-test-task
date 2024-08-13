@@ -16,9 +16,9 @@ final class Scheduler
     {
         static::prepareData($usersId, $date);
 
-        $users = static::getUsers($usersId);
+        $users = static::findUsers($usersId);
 
-        $meetups = static::getMeetups($date);
+        $meetups = static::findMeetups($date);
 
         echo "Making schedule for Users " . implode(',', $usersId) . " on {$date}\n";
         static::makeSchedule($users, $meetups);
@@ -96,7 +96,7 @@ final class Scheduler
     /**
      * Получает массив пользователей по ID из БД
      */
-    private static function getUsers(array $usersId): array
+    private static function findUsers(array $usersId): array
     {
 
         if ($usersId[0] == 'all') {
@@ -118,7 +118,7 @@ final class Scheduler
     /**
      * Получает массив встреч по ID из БД
      */
-    private static function getMeetups($date)
+    private static function findMeetups($date)
     {
         $result = Meetup::find()
             ->where(['>=', 'starts_at', strtotime("{$date} 00:00")])
