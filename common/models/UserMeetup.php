@@ -26,7 +26,6 @@ class UserMeetup extends ActiveRecord
                     ActiveRecord::EVENT_BEFORE_UPDATE => [],
                 ],
                 'value' => time(),
-
             ],
         ];
     }

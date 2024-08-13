@@ -3,9 +3,7 @@
 namespace frontend\controllers;
 
 use backend\commands\Scheduler;
-use frontend\models\Meetup;
 use frontend\models\User;
-use frontend\models\UserMeetup;
 use Yii;
 
 final class UserController extends BaseRestApiController
@@ -19,7 +17,7 @@ final class UserController extends BaseRestApiController
             Scheduler::make($usersId, $date);
 
             Yii::$app->response->statusCode = 200;
-            Yii::$app->response->content = "OK";
+            Yii::$app->response->content = 'OK';
         } catch (\Throwable $th) {
             Yii::$app->response->statusCode = 400;
             Yii::$app->response->content = $th->getMessage();

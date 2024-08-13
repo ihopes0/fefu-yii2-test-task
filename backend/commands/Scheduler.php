@@ -14,14 +14,16 @@ final class Scheduler
      */
     public static function make(string $usersId, string $date): void
     {
-        static::prepareData($usersId, $date);
+        ['usersId' => $usersId, 'date' => $date] = static::prepareData($usersId, $date);
 
         $users = static::findUsers($usersId);
 
         $meetups = static::findMeetups($date);
 
-        echo "Making schedule for Users " . implode(',', $usersId) . " on {$date}\n";
+        echo sprintf("Making schedule for Users %s on %s\n", implode(',', $usersId), $date);
         static::makeSchedule($users, $meetups);
+
+        return;
     }
 
     /**
@@ -61,7 +63,7 @@ final class Scheduler
                 $userMeetup->meetup_id = $scheduledMeetup['id'];
 
                 if (!$userMeetup->save()) {
-                    echo 'Failed to save meetup for user: ' . json_encode($userMeetup->errors) . "\n";
+                    echo sprintf('Failed to save meetup for user: %s\n', json_encode($userMeetup->errors) ?? 'no errors?');
                     continue;
                 }
 
@@ -69,6 +71,8 @@ final class Scheduler
             }
             Meetup::updateAllCounters(['count_participated_members' => 1], ['id' => $savedMeetupsId]);
         }
+
+        return;
     }
 
     /**
@@ -77,8 +81,10 @@ final class Scheduler
      * В результате работы метода: 
      * - строка $usersId разбивается в массив id пользователей;
      * - дата приводится к формату y-m-d
+     * 
+     * @return array{usersId: string[], date: string}
      */
-    private static function prepareData(string &$usersId, string &$date): void
+    private static function prepareData(string $usersId, string $date): array
     {
         $usersId = explode(',', $usersId);
         $usersId = static::filterInvalidUserId($usersId);
@@ -87,10 +93,12 @@ final class Scheduler
             throw new \Exception('User validation error: not a single valid UserId is given');
         }
         if (!strtotime($date)) {
-            throw new \Exception('Date validation error: ' . '"' . $date . '"' . " is not a valid date");
+            throw new \Exception(sprintf("Date validation error: '%s' is not a valid date", $date));
         }
 
         $date = date('y-m-d', strtotime($date));
+
+        return ['usersId' => $usersId, 'date' => $date];
     }
 
     /**
@@ -109,7 +117,7 @@ final class Scheduler
         }
 
         if (!$users) {
-            throw new \Exception('User not found');
+            throw new \Exception('Users not found');
         }
 
         return $users;
@@ -118,24 +126,26 @@ final class Scheduler
     /**
      * Получает массив встреч по ID из БД
      */
-    private static function findMeetups($date)
+    private static function findMeetups(string $date): array
     {
-        $result = Meetup::find()
+        $meetups = Meetup::find()
             ->where(['>=', 'starts_at', strtotime("{$date} 00:00")])
             ->andWhere(['<=', 'starts_at', strtotime("{$date} 23:59")])
             ->orderBy(['ends_at' => SORT_ASC])
             ->asArray()
             ->all();
-        if (!$result) {
-            throw new \Exception("There are no meetings on {$date}\n");
+        if (!$meetups) {
+            throw new \Exception(sprintf('There are no meetings on %s', $date));
         }
 
-        return $result;
+        return $meetups;
     }
 
     /**
      * Проводит фильтрацию значений ID пользователей.
      * Пример: ['bili', 'bala', '1'] - - > ['1']
+     * 
+     * @return string[]
      */
     private static function filterInvalidUserId(array $usersId): array
     {
@@ -144,7 +154,7 @@ final class Scheduler
         for ($i = 0; $i < $length; $i++) {
             $userId = $usersId[$i];
             if ($userId !== 'all' && (int) $userId === 0) {
-                echo "{$userId} is an invalid ID\n";
+                echo sprintf("%s is an invalid ID\n", $userId);
                 unset($usersId[$i]);
             }
         }

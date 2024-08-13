@@ -14,8 +14,7 @@ final class ScheduleController extends Controller
 {
 
     /**
-     * Creates a schedule via Scheduler class.
-     * @return int 0 if successful
+     * Создает расписание для указанных пользователей на указанную дату с помощью backend\commands\Scheduler
      */
     public function actionCreateFor(string $usersId, string $date): int
     {
@@ -24,13 +23,15 @@ final class ScheduleController extends Controller
             echo "Success!\n";
             
         } catch (\Throwable $th) {
-            echo $th->getMessage() . " in " . $th->getFile() . " on line " . $th->getLine();
+            echo sprintf('%s in %s on line %d', $th->getMessage(), $th->getFile(), $th->getLine());
         }
 
         return 0;
     }
 
-    // for development only
+    /**
+     * Удаляет все записи из таблицы user_meetup и чистит счетчики участников на встречах в таблице meetup (удаляет расписание)
+     */
     public function actionDeleteAllScheduledMeetups()
     {
         Meetup::updateAll(['count_participated_members' => 0]);
