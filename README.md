@@ -56,37 +56,37 @@ php -S localhost:8888 -t frontend/web
 ***
 ## API
 ### User
-<span class="method get">GET</span> /user - получить первые 20 пользователей
+GET /user - получить первые 20 пользователей
 
-<span class="method get">GET</span> /user?page=NUM - получить 20 пользователей на странице NUM
+GET /user?page=NUM - получить 20 пользователей на странице NUM
 
-<span class="method get">GET</span> /user?expand=meetups - получить 20 пользователей с их расписанием
+GET /user?expand=meetups - получить 20 пользователей с их расписанием
 
-<span class="method get">GET</span> /user/{id} - получить одного пользователя по id
+GET /user/{id} - получить одного пользователя по id
 
-<span class="method post">POST</span> /user - добавить нового пользователя
+POST /user - добавить нового пользователя
 
-<span class="method post">POST</span> /user/create-schedule?id=IDS&day=DAY - составить расписание для пользователя или пользователей, где IDS - это строка с id пользователей через запятую ("1,2,3,4"), для всех - all; DAY - дата в формате y-m-d (24-10-01)
+POST /user/create-schedule?id=IDS&day=DAY - составить расписание для пользователя или пользователей, где IDS - это строка с id пользователей через запятую ("1,2,3,4"), для всех - all; DAY - дата в формате y-m-d (24-10-01)
 
-<span class="method update">PATCH, PUT</span> /user/{id} - обновить данные пользователя по id
+PATCH, PUT /user/{id} - обновить данные пользователя по id
 
-<span class="method delete">DELETE</span> /user/{id} - удалить пользователя с id
+DELETE /user/{id} - удалить пользователя с id
 
 ### Meetings
-<span class="method get">GET</span> /meetup - получить первые 20 встреч
+GET /meetup - получить первые 20 встреч
 
-<span class="method get">GET</span> /meetup?page=NUM - получить 20 встреч на странице NUM
+GET /meetup?page=NUM - получить 20 встреч на странице NUM
 
-<span class="method get">GET</span> /meetup?expand=users - получить 20 встреч с их 
+GET /meetup?expand=users - получить 20 встреч с их 
  участниками
 
-<span class="method get">GET</span> /meetup/{id} - получить одну встречу по id
+GET /meetup/{id} - получить одну встречу по id
 
-<span class="method post">POST</span> /meetup - добавить новую встречу
+POST /meetup - добавить новую встречу
 
-<span class="method update">PATCH, PUT</span> /meetup/{id} - обновить данные встречи по id
+PATCH, PUT /meetup/{id} - обновить данные встречи по id
 
-<span class="method delete">DELETE</span> /meetup/{id} - удалить встречу с id
+DELETE /meetup/{id} - удалить встречу с id
 ***
 ## Создание расписания через CLI
 ```bash
@@ -94,25 +94,3 @@ php yii schedule/create-for USERS_ID DATE
 ```
 USERS_ID - id пользователей через запятую, all для всех
 DATE - дата формата y-m-d (24-10-01)
-<style>
-    .method {
-        border-radius: 10px; 
-        padding: 5px 5px;
-    }
-
-    .delete {
-        background-color: #F0000E;
-    }
-
-    .post {
-        background-color: #FFA500;
-    }
-
-    .update {
-        background-color: #B3DCFD;
-    }
-
-    .get {
-        background-color: #CD6;
-    }
-</style>
